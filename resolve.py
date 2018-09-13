@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import socket
-import sys
+# import sys
 
 
-target = (sys.argv[1])
+target = 'localhost'  # (sys.argv[1])
 
 
 def validIp():
@@ -33,8 +33,7 @@ def getHostname():
 for x in target:
     if validIp() is False:
         print(' Query '.center(50, '*'))
-        print(target + ' DNS resolves to: ' + str(getIp()))
-        print('')
+        print(target + ' DNS resolves to: ' + str(getIp()) + '\n')
         print(str(getIp()) + ' rDNS resolves to: ' + str(getHostname()))
         print(' Done '.center(50, '*'))
         break
