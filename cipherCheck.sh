@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # OpenSSL requires the port number.
 
 SERVER=$1
