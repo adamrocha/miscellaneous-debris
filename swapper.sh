@@ -1,5 +1,6 @@
 #!/bin/bash
 # Get current swap usage for all running processes
+
 SUM=0
 OVERALL=0
 for DIR in $(find /proc/ -maxdepth 1 -type d | grep -E "^/proc/[0-9]")
@@ -17,4 +18,4 @@ do
     (( OVERALL=OVERALL+SUM ))
     SUM=0
 done
-echo "Overall swap used: $OVERALL"
+echo "Overall swapped: $OVERALL KB"
