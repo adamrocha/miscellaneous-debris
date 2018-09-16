@@ -20,7 +20,7 @@ do
     done
     if [ "$SUM" -gt 0 ]
     then
-    echo "PID=$PID - Swap used: $SUM - ($PROGNAME)"
+    echo "PID=$PID swapped: $SUM - ($PROGNAME)"
   fi
     (( OVERALL=OVERALL+SUM ))
     SUM=0
