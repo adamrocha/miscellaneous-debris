@@ -1,5 +1,10 @@
 #!/bin/bash
 # Get current swap usage for all running processes
+# Pipe the output to "sort -nk3" to get sorted output
+# Erik Ljungstrom 27/05/2011
+# Modified by Mikko Rantalainen 2012-08-09
+# Modified by Marc Methot 2014-09-18
+# Modified by Adam Rocha 2018-09-15
 
 SUM=0
 OVERALL=0
