@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+# This script will query DNS and/or rDNS in within the same script.
 
 import socket
 # import sys
-
 
 target = 'localhost'  # (sys.argv[1])
 

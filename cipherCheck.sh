@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Check openssl ciphers against a URL.
 # OpenSSL requires the port number.
 
 SERVER=$1

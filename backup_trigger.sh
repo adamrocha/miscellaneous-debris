@@ -1,5 +1,6 @@
 #!/bin/bash
-# Report failed backups over 24hrs
+# Report failed backups over 24hrs and post to zenoss event console
+# via JSON API
 
 currentTime=$(date +%s)
 backupFileCreated=$(stat -c %X "$(ls -1rt /mnt/nuzenoss_backups/* |tail -1)")
