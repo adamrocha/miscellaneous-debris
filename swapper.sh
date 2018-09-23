@@ -17,7 +17,7 @@ do
     (( SUM=SUM+SWAP ))
   done
   if [ "$SUM" -gt 0 ] ; then
-    echo "PID=$PID swapped: $SUM - ($PROGNAME)"
+    echo "PID=$PID swapped: $SUM KB - ($PROGNAME)"
   fi
   (( OVERALL=OVERALL+SUM ))
   SUM=0
