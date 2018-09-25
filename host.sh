@@ -1,4 +1,5 @@
 #!/bin/bash
+# bash two way DNS
 
 host=$(host "$1")
 ip=$(echo "$host" | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
