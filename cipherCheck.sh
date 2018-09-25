@@ -14,7 +14,7 @@ do
   if [[ "$result" =~ ":error:" ]] ; then
     error=$(echo -n $result | cut -d':' -f6)
     echo NO \("$error"\)
-  elif [[ "$result" =~ "Cipher is ${cipher}" || "$result" =~ "Cipher    :" ]] ; then
+  elif [[ "$result" = "Cipher is ${cipher}" || "$result" =~ "Cipher    :" ]] ; then
     echo YES
   else
     echo UNKNOWN RESPONSE
