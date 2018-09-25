@@ -3,7 +3,7 @@
 # via JSON API
 
 currentTime=$(date +%s)
-backupFileCreated=$(stat -c %X "$(find /mnt/nuzenoss_backups/* -exec ls -1rt {} + |tail -1)")
+backupFileCreated=$(stat -c %X "$(find /mnt/nuzenoss_backups/* -type f -exec ls -1rt {} + |tail -1)")
 difference=$((currentTime - backupFileCreated))
 sinceDate=$(date -d@"$backupFileCreated")
 
