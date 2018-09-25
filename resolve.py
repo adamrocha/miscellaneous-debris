@@ -2,9 +2,9 @@
 # This script will query DNS and/or rDNS in within the same script.
 
 import socket
-# import sys
+import sys
 
-target = 'localhost'  # (sys.argv[1])
+target = (sys.argv[1])
 
 
 def validIp():
