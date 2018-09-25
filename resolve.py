@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# This script will query DNS and/or rDNS in within the same script.
+# Two way DNS
 
 import socket
 import sys
