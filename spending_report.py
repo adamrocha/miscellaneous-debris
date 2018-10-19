@@ -15,6 +15,7 @@ def totalBills():
     bill3 = 6.66
     return bill1 + bill2 + bill3
 
+
 rent = 1500
 expenses = totalExpenses()
 bills = totalBills()

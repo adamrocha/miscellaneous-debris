@@ -30,6 +30,7 @@ def getHostname():
     except Exception:
         pass
 
+
 for x in target:
     if validIp() is False:
         print(' Query '.center(50, '*'))
