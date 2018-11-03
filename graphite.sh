@@ -10,6 +10,6 @@
 #done
 
 while true; do
-  echo "foo.bar $((1 + RANDOM % 100)) `date +%s`" |nc localhost 2003
+  echo "foo.bar $((1 + RANDOM % 100)) $(date +%s)" |nc localhost 2003
   sleep 10
 done
