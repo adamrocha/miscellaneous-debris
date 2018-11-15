@@ -13,3 +13,7 @@ while true; do
   echo "foo.bar $((1 + RANDOM % 100)) $(date +%s)" |nc localhost 2003
   sleep 10
 done
+
+while true; do
+  echo -n "example:$((RANDOM % 100))|c" | nc -w 1 -u 127.0.0.1 8125
+done
