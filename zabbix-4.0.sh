@@ -19,5 +19,6 @@ sudo apt update
 sudo apt install grafana
 sudo systemctl daemon-reload
 sudo systemctl start grafana-server
-sudo systemctl status grafana-server
 sudo systemctl enable grafana-server.service
+sudo grafana-cli plugins install alexanderzobnin-zabbix-app
+sudo systemctl restart grafana-server
