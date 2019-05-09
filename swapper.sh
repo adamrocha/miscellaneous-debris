@@ -4,11 +4,12 @@
 # Erik Ljungstrom 27/05/2011 (kernel 2.6.16)
 # Modified by Mikko Rantalainen 2012-08-09
 # Modified by Marc Methot 2014-09-18
-# Modified by Adam Rocha 2018-09-15
+# Modified by Adam Rocha 2019-05-08
 
 SUM=0
 OVERALL=0
-for DIR in $(find /proc/ -maxdepth 1 -type d -regex "^/proc/[0-9]+")
+
+while IFS= read -r -d '' DIR
 do
   PID=$(echo "$DIR" | cut -d / -f 3)
   PROGNAME=$(ps -p "$PID" -o comm --no-headers)
@@ -21,5 +22,5 @@ do
   fi
   (( OVERALL=OVERALL+SUM ))
   SUM=0
-done
+done < <(find /proc/ -maxdepth 1 -type d -regex "^/proc/[0-9]+" -print0)
 echo "Overall swapped: $OVERALL KB"
