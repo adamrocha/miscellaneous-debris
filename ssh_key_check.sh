@@ -1,8 +1,8 @@
 #!/bin/bash
 
-while read line; do
-  ssh -o PasswordAuthentication=no -n $line hostname &>/dev/null
+while read -r line; do
+  ssh -o PasswordAuthentication=no -n "$line" hostname &>/dev/null
   if [ $? -ne 0 ]; then
-    echo $line
+    echo "$line"
   fi
 done
