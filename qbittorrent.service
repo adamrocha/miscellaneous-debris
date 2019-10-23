@@ -1,0 +1,12 @@
+[Unit]
+Description=qBittorrent WEBUI Daemon Service
+After=network.target expressvpn.service vpn-connect.service
+Requires=vpn-connect.service
+
+[Service]
+User=fantomaster
+ExecStart=/usr/bin/qbittorrent-nox
+ExecStop=/usr/bin/killall -w qbittorrent-nox
+
+[Install]
+WantedBy=multi-user.target
