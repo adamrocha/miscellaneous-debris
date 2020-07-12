@@ -1,7 +1,6 @@
 [Unit]
 Description=qBittorrent WEBUI Daemon Service
-After=network.target expressvpn.service vpn-connect.service
-Requires=vpn-connect.service
+After=network.target expressvpn.service
 
 [Service]
 User=fantomaster
