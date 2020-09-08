@@ -28,4 +28,8 @@ def replicaStatus():
             print('HTTP: ' + str(response.status_code) + ' -- ' + 'Replicas Error: ' + str(replicaHealth))
             sys.exit(2)
 
-replicaStatus()
+def main():
+    replicaStatus()
+
+if __name__ == "__main__":
+    main()
