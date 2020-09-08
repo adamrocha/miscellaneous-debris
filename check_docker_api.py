@@ -8,33 +8,13 @@ import requests
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    '-A', '--api',
-    type = str,
-    required = True
-)
-parser.add_argument(
-    '-U', '--username',
-    type = str,
-    required = True
-)
-parser.add_argument(
-    '-P', '--password',
-    type = str,
-    required = True
-)
-
+parser.add_argument('-A', '--api', type = str, required = True)
+parser.add_argument('-U', '--username', type = str, required = True)
+parser.add_argument('-P', '--password', type = str, required = True)
 args = parser.parse_args()
-headers = {
-    'Content-Type': 'application/json; charset=utf-8',
-#    'Authentication': Basic 'base64'
-}
-response = requests.get(
-    args.api,
-    headers=headers,
-    auth=(args.username, args.password)
-)
 
+headers = {'Content-Type': 'application/json; charset=utf-8'}
+response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
 objects = response.text.encode('utf8')
 replicaHealth = json.loads(objects)['replica_health']
 
