@@ -12,19 +12,14 @@ def authArgs():
     parser.add_argument('-U', '--username', type = str, required = True)
     parser.add_argument('-P', '--password', type = str, required = True)
     args = parser.parse_args()
+    return args
+
+def replicaStatus(args):
     headers = {'Content-Type': 'application/json; charset=utf-8'}
     response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
-    return response
-
-def httpCode():
-    response = authArgs()
-    statusCode = response.status_code
-    if statusCode != 200:
+    if response.status_code != 200:
         print(response.content)
         exit(2)
-
-def replicaStatus():
-    response = authArgs()
     objects = response.text.encode('utf8')
     replicaHealth = json.loads(objects)['replica_health']
     for (k, v) in replicaHealth.items():
@@ -37,8 +32,8 @@ def replicaStatus():
             exit(2)
 
 def main():
-    httpCode()
-    replicaStatus()
+    args = authArgs()
+    replicaStatus(args)
 
 if __name__ == "__main__":
     main()
