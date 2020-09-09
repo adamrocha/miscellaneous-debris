@@ -16,15 +16,12 @@ def authArgs():
     response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
     return response
 
-try:
-    def httpCode():
-        response = authArgs()
-        statusCode = response.status_code
-        if statusCode != 200:
-            print("HTTP Error: " + str(response.status_code))
-            exit(2)
-except Exception as e:
-    print(e)
+def httpCode():
+    response = authArgs()
+    statusCode = response.status_code
+    if statusCode != 200:
+        print(response.content)
+        exit(2)
 
 def replicaStatus():
     response = authArgs()
