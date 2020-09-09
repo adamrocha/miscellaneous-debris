@@ -15,21 +15,24 @@ def authArgs():
     return args
 
 def replicaStatus(args):
-    headers = {'Content-Type': 'application/json; charset=utf-8'}
-    response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
-    if response.status_code != 200:
-        print(response.content)
-        exit(2)
-    objects = response.text.encode('utf8')
-    replicaHealth = json.loads(objects)['replica_health']
-    for (k, v) in replicaHealth.items():
-        v = str(v)
-        if v == "OK":
-            print('Replicas Healthy: ' + str(replicaHealth))
-            exit(0)
-        else:
-            print('Replicas Error: ' + str(replicaHealth))
+    try:
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
+        response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
+        if response.status_code != 200:
+            print(response.content)
             exit(2)
+        objects = response.text.encode('utf8')
+        replicaHealth = json.loads(objects)['replica_health']
+        for (k, v) in replicaHealth.items():
+            v = str(v)
+            if v == "OK":
+                print('Replicas Healthy: ' + str(replicaHealth))
+                exit(0)
+            else:
+                print('Replicas Error: ' + str(replicaHealth))
+                exit(2)
+    except Exception as e:
+        print(e)
 
 def main():
     args = authArgs()
