@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-# Query Docker API for replica health
+# Query Docker API objects
 # Author: arocha 2020-09-08
 
 import argparse
 import json
 import requests
+
 
 def getArgs():
     parser = argparse.ArgumentParser()
@@ -14,7 +15,8 @@ def getArgs():
     args = parser.parse_args()
     return args
 
-def replicaStatus(args):
+
+def getObjects(args):
     try:
         headers = {'Content-Type': 'application/json; charset=utf-8'}
         response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
@@ -22,6 +24,14 @@ def replicaStatus(args):
             print(response.content)
             exit(2)
         objects = response.text.encode('utf8')
+        return objects
+    except Exception as e:
+        print(e)
+        exit(2)
+
+
+def replicaStatus(objects):
+    try:
         replicaHealth = json.loads(objects)['replica_health']
         for (k, v) in replicaHealth.items():
             v = str(v)
@@ -32,12 +42,13 @@ def replicaStatus(args):
                 print('Replicas Error: ' + str(replicaHealth))
                 exit(2)
     except Exception as e:
-        print(e)
+        print("Object error: " + str(e))
         exit(2)
 
 def main():
     args = getArgs()
-    replicaStatus(args)
+    objects = getObjects(args)
+    replicaStatus(objects)
 
 if __name__ == "__main__":
     main()
