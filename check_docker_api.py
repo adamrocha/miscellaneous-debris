@@ -33,6 +33,7 @@ def replicaStatus(args):
                 exit(2)
     except Exception as e:
         print(e)
+        exit(2)
 
 def main():
     args = getArgs()
