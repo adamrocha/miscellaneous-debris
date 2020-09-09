@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Query Docker replica API
+# Query Docker API for replica health
 # Author: arocha 2020-09-08
 
 import argparse
