@@ -6,7 +6,7 @@ import argparse
 import json
 import requests
 
-def authArgs():
+def getArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument('-A', '--api', type = str, required = True)
     parser.add_argument('-U', '--username', type = str, required = True)
@@ -35,7 +35,7 @@ def replicaStatus(args):
         print(e)
 
 def main():
-    args = authArgs()
+    args = getArgs()
     replicaStatus(args)
 
 if __name__ == "__main__":
