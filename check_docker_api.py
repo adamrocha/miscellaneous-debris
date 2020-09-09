@@ -45,6 +45,7 @@ def replicaStatus(objects):
         print("Object error: " + str(e))
         exit(2)
 
+
 def main():
     args = getArgs()
     objects = getObjects(args)
