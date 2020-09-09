@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-# Grabs your external ip form the internet
+# Fetch external IP from the internet
 
-import urllib.request
-print(urllib.request.urlopen('https://ident.me').read().decode('utf8'))
+import requests
+
+url = "https://ident.me"
+response = requests.get(url)
+
+print(response.text)
+
+#print(urllib.request.urlopen('https://ident.me').read().decode('utf8'))
