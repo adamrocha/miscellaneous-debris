@@ -6,13 +6,12 @@ import argparse
 import json
 import requests
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-A', '--api', type = str, required = True)
-parser.add_argument('-U', '--username', type = str, required = True)
-parser.add_argument('-P', '--password', type = str, required = True)
-args = parser.parse_args()
-
 def authArgs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-A', '--api', type = str, required = True)
+    parser.add_argument('-U', '--username', type = str, required = True)
+    parser.add_argument('-P', '--password', type = str, required = True)
+    args = parser.parse_args()
     headers = {'Content-Type': 'application/json; charset=utf-8'}
     response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
     return response
