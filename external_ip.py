@@ -3,9 +3,16 @@
 
 import requests
 
-url = "https://ident.me"
-response = requests.get(url)
 
-print(response.text)
+def fetchIP():
+    url = "https://ident.me"
+    response = requests.get(url)
+    return response.text
 
-#print(urllib.request.urlopen('https://ident.me').read().decode('utf8'))
+
+def main():
+    externalIP = fetchIP()
+    print(externalIP)
+
+if __name__ == "__main__":
+    main()
