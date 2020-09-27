@@ -6,9 +6,12 @@ import requests
 
 
 def fetchIP():
-    url = "https://ident.me"
-    response = requests.get(url)
-    return response.text
+    try:
+        url = "https://ident.me"
+        response = requests.get(url)
+        return response.text
+    except Exception as e:
+        print(e)
 
 
 def main():
