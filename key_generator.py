@@ -5,7 +5,11 @@ from random import choice
 from random import randint
 import string
 
-characters = string.ascii_letters + string.digits # + string.punctuation
-key = "".join(choice(characters)
+def main():
+    characters = string.ascii_letters + string.digits # + string.punctuation
+    key = "".join(choice(characters)
     for x in range(randint(16, 24)))
-print(key)
+    print(key)
+
+if __name__ == "__main__":
+    main()
