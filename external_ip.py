@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Fetch external IP from the internet
+# Author: Adam Rocha
 
 import requests
 
