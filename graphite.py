@@ -5,15 +5,10 @@ import random
 import time
 
 
-def randInt():
+def main():
     r = random.randint(1, 300)
     t = time.strftime('%c')
-    return str(t) + " --> " + str(r)
-
-
-def main():
-    rand = randInt()
-    print(rand)
+    print(str(t) + " --> " + str(r))
 
 if __name__ == "__main__":
     main()
