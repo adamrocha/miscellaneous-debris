@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Query Docker API objects
-# Author: arocha 2020-09-08
+# Author: Adam Rocha 2020-09-08
 
 import argparse
 import json
