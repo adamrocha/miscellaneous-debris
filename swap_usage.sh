@@ -9,12 +9,10 @@
 SUM=0
 OVERALL=0
 
-while IFS= read -r -d '' DIR
-do
+while IFS= read -r -d '' DIR ; do
   PID=$(echo "$DIR" | cut -d / -f 3)
   PROGNAME=$(ps -p "$PID" -o comm --no-headers)
-  for SWAP in $(grep VmSwap "$DIR"/status 2>/dev/null | awk '{ print $2 }')
-  do
+  for SWAP in $(grep VmSwap "$DIR"/status 2>/dev/null | awk '{ print $2 }') ; do
     (( SUM=SUM+SWAP ))
   done
   if [ "$SUM" -gt 0 ] ; then
