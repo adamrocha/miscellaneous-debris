@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Query Docker API objects
 # Author: Adam Rocha 2020-09-08
+# Last modified: 2020-10-20
 
 import argparse
 import json
@@ -23,7 +24,7 @@ def getObjects(args):
         if response.status_code != 200:
             print(response.content)
             exit(2)
-        objects = response.text.encode('utf8')
+        objects = response.content.decode('utf8')
         return objects
     except Exception as e:
         print(e)
