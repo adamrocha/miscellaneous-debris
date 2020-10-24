@@ -35,13 +35,12 @@ def replicaStatus(objects):
     try:
         replicaHealth = json.loads(objects)['replica_health']
         for (k, v) in replicaHealth.items():
-            v = str(v)
-            if v == "OK":
-                print('Replicas Healthy: ' + str(replicaHealth))
-                exit(0)
-            else:
+            if v != "OK":
                 print('Replicas Error: ' + str(replicaHealth))
                 exit(2)
+            else:
+                print('OK - Replicas Healthy: ' + str(replicaHealth))
+                exit(0)
     except Exception as e:
         print("Object error: " + str(e))
         exit(2)
