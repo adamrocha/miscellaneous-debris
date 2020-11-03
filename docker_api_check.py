@@ -55,5 +55,6 @@ def main():
     objects = getObjects(args)
     replicaStatus(objects)
 
+
 if __name__ == "__main__":
     main()
