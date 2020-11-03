@@ -10,9 +10,9 @@ import requests
 
 def getArgs():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-A', '--api', type = str, required = True)
-    parser.add_argument('-U', '--username', type = str, required = True)
-    parser.add_argument('-P', '--password', type = str, required = True)
+    parser.add_argument('-A', '--api', type=str, required=True)
+    parser.add_argument('-U', '--username', type=str, required=True)
+    parser.add_argument('-P', '--password', type=str, required=True)
     args = parser.parse_args()
     return args
 
