@@ -18,5 +18,6 @@ def main():
     externalIP = fetchIP()
     print(externalIP)
 
+
 if __name__ == "__main__":
     main()
