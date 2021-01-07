@@ -7,7 +7,7 @@ import string
 
 
 def main():
-    characters = string.ascii_letters + string.digits # + string.punctuation
+    characters = string.ascii_letters + string.digits  # + string.punctuation
     key = "".join(choice(characters)
     for x in range(randint(16, 24)))
     print(key)
