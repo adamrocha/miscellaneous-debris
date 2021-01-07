@@ -12,5 +12,6 @@ def main():
     for x in range(randint(16, 24)))
     print(key)
 
+
 if __name__ == "__main__":
     main()
