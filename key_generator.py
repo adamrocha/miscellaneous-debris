@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+#
 # Generate a random key defined by integer range
+#
 
 from random import choice
 from random import randint
