@@ -38,12 +38,12 @@ def replicaStatus(objects):
         if replicaCount < 3:
             print('Replica quorum error: ' + str(replicaCount) + ' replicas exist')
             exit(2)
-        for (k, v) in replicaHealth.items():
+        for v in replicaHealth.items():
             if v != "OK":
                 print('Replicas Error: ' + str(replicaHealth))
                 exit(2)
             else:
-                print('OK - Replicas Healthy')
+                print('OK - Replicas Healthy' + str(replicaHealth))
                 exit(0)
     except Exception as e:
         print("Object error: " + str(e))
