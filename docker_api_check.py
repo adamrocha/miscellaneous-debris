@@ -51,6 +51,10 @@ def replica_status(objects):
             if value != "OK":
                 print('Replicas Error: ' + str(status))
                 sys.exit(2)
+        for key, value in status.items():
+            if value == "OK":
+                print('Replicas Healthy: ' + str(status))
+                sys.exit(0)
     except Exception as e:
         print("Object error: " + str(e))
         sys.exit(2)
