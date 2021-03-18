@@ -5,6 +5,7 @@
 
 import argparse
 import json
+import sys
 import requests
 
 
@@ -20,15 +21,17 @@ def getArgs():
 def getObjects(args):
     try:
         headers = {'Content-Type': 'application/json; charset=utf-8'}
-        response = requests.get(args.api, headers=headers, auth=(args.username, args.password))
+        response = requests.get(args.api,
+                                headers=headers,
+                                auth=(args.username, args.password))
         if response.status_code != 200:
             print(response.content)
-            exit(2)
+            sys.exit(2)
         objects = response.content.decode('utf8')
         return objects
     except Exception as e:
         print(e)
-        exit(2)
+        sys.exit(2)
 
 
 def replicaStatus(objects):
@@ -37,18 +40,15 @@ def replicaStatus(objects):
         replicaCount = len(replicaHealth)
         if replicaCount < 3:
             print('Replica quorum error: ' + str(replicaCount) + ' replicas exist')
-            exit(2)
+            sys.exit(2)
         items = replicaHealth.items()
-        for k, v in items:
-            if v != "OK":
+        for value in items:
+            if value != "OK":
                 print('Replicas Error: ' + str(replicaHealth))
-                exit(2)
-        if v != "OK":
-            print('Replicas Error: ' + str(replicaHealth))
-            exit(2)
+                sys.exit(2)
     except Exception as e:
         print("Object error: " + str(e))
-        exit(2)
+        sys.exit(2)
 
 
 def main():
