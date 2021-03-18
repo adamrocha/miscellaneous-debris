@@ -47,7 +47,7 @@ def replica_status(objects):
             print('Replica quorum error: ' + str(count) + ' replicas exist')
             sys.exit(2)
         items = status.items()
-        for value in items:
+        for key, value in items:
             if value != "OK":
                 print('Replicas Error: ' + str(status))
                 sys.exit(2)
