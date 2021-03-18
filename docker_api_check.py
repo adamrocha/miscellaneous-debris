@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-# Query Docker API objects
-# Author: Adam Rocha 2020-09-08
-# Last modified: 2021-03-17
+"""
+Query Docker API objects
+Author: Adam Rocha 2020-09-08
+Last modified: 2021-03-17
+"""
 
 import argparse
 import json
@@ -9,7 +11,8 @@ import sys
 import requests
 
 
-def getArgs():
+def get_args():
+    """ Gather authentication arguements """
     parser = argparse.ArgumentParser()
     parser.add_argument('-A', '--api', type=str, required=True)
     parser.add_argument('-U', '--username', type=str, required=True)
@@ -18,7 +21,8 @@ def getArgs():
     return args
 
 
-def getObjects(args):
+def get_objects(args):
+    """ Authenticate and collect objects """
     try:
         headers = {'Content-Type': 'application/json; charset=utf-8'}
         response = requests.get(args.api,
@@ -34,17 +38,18 @@ def getObjects(args):
         sys.exit(2)
 
 
-def replicaStatus(objects):
+def replica_status(objects):
+    """ Print replica status """
     try:
-        replicaHealth = json.loads(objects)['replica_health']
-        replicaCount = len(replicaHealth)
-        if replicaCount < 3:
-            print('Replica quorum error: ' + str(replicaCount) + ' replicas exist')
+        replica_health = json.loads(objects)['replica_health']
+        replica_count = len(replica_health)
+        if replica_count < 3:
+            print('Replica quorum error: ' + str(replica_count) + ' replicas exist')
             sys.exit(2)
-        items = replicaHealth.items()
+        items = replica_health.items()
         for value in items:
             if value != "OK":
-                print('Replicas Error: ' + str(replicaHealth))
+                print('Replicas Error: ' + str(replica_health))
                 sys.exit(2)
     except Exception as e:
         print("Object error: " + str(e))
@@ -52,9 +57,10 @@ def replicaStatus(objects):
 
 
 def main():
-    args = getArgs()
-    objects = getObjects(args)
-    replicaStatus(objects)
+    """ Main funtion handling """
+    args = get_args()
+    objects = get_objects(args)
+    replica_status(objects)
 
 
 if __name__ == "__main__":
