@@ -41,15 +41,15 @@ def get_objects(args):
 def replica_status(objects):
     """ Print replica status """
     try:
-        replica_health = json.loads(objects)['replica_health']
-        replica_count = len(replica_health)
-        if replica_count < 3:
-            print('Replica quorum error: ' + str(replica_count) + ' replicas exist')
+        status = json.loads(objects)['replica_health']
+        count = len(status)
+        if count < 3:
+            print('Replica quorum error: ' + str(count) + ' replicas exist')
             sys.exit(2)
-        items = replica_health.items()
+        items = status.items()
         for value in items:
             if value != "OK":
-                print('Replicas Error: ' + str(replica_health))
+                print('Replicas Error: ' + str(status))
                 sys.exit(2)
     except Exception as e:
         print("Object error: " + str(e))
