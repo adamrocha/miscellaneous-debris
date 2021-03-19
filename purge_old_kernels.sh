@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Remove old debian kernel packages
+# Purge old debian kernels
+# Remove --dry-run to commit
+
 
 dpkg -l linux-{image,headers,modules}-* | \
 awk '{print $2}' | \
