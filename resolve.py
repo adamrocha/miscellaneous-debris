@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-# Two way DNS
+"""
+
+Return Two way DNS
+"""
 
 import socket
 import sys
@@ -7,15 +10,17 @@ import sys
 target = (sys.argv[1])
 
 
-def validIp():
+def valid_ip():
+    """ Validate IP is valid """
     try:
-        socket.inet_aton(target)
-        return True
+        valid = socket.inet_aton(target)
+        return valid
     except OSError:
         return False
 
 
-def getIp():
+def get_ip():
+    """ Get hostname """
     try:
         host = socket.gethostbyname(target)
         return host
@@ -23,23 +28,24 @@ def getIp():
         pass
 
 
-def getHostname():
+def get_hostname():
+    """ Get IP """
     try:
-        address = socket.gethostbyaddr(getIp())
+        address = socket.gethostbyaddr(get_ip())
         return address
     except Exception:
         pass
 
 
 for x in target:
-    if validIp() is False:
+    if valid_ip() is False:
         print(' Query '.center(50, '*'))
-        print(target + ' DNS resolves to: ' + str(getIp()) + '\n')
-        print(str(getIp()) + ' rDNS resolves to: ' + str(getHostname()))
+        print(target + ' DNS resolves to: ' + str(get_ip()) + '\n')
+        print(str(get_ip()) + ' rDNS resolves to: ' + str(get_hostname()))
         print(' Done '.center(50, '*'))
         break
-    if validIp() is True:
+    if valid_ip() is True:
         print(' Query '.center(50, '*'))
-        print(str(getIp()) + ' rDNS resolves to: ' + str(getHostname()))
+        print(str(get_ip()) + ' rDNS resolves to: ' + str(get_hostname()))
         print(' Done '.center(50, '*'))
         break
