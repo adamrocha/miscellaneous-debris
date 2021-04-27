@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-# Fetch external IP from the internet
-# Author: Adam Rocha
+"""
+Fetch external IP from the internet
+Author: Adam Rocha
+"""
 
 import requests
 
 
-def fetchIP():
+def fetch_ip():
+    """ Query IP from the internet """
     try:
         url = "https://ident.me"
         response = requests.get(url)
@@ -15,8 +18,9 @@ def fetchIP():
 
 
 def main():
-    externalIP = fetchIP()
-    print(externalIP)
+    """ Main function handling """
+    external_ip = fetch_ip()
+    print(external_ip)
 
 
 if __name__ == "__main__":
