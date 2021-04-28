@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-# This will generate random IP's to a file
+"""
+This will generate random IP's to a file
+"""
 
 import random
 import socket
