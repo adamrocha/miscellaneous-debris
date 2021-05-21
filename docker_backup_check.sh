@@ -17,9 +17,9 @@ DTRsinceDate=$(date -d@"$DTRbackupFileCreated")
 
 # Last backups exceeding 8 day threshold
 if [ $UCPdifference -ge 691200 ] || [ $DTRdifference -ge 691200 ] ; then
-  echo "Error: One or more backups failed. UCP completed $UCPsinceDate. DTR completed $DTRsinceDate."
-  exit 2
+    echo "Error: One or more backups failed. UCP completed $UCPsinceDate. DTR completed $DTRsinceDate."
+    exit 2
 else
-  echo "OK - Backups on schedule."
-  exit 0
+    echo "OK - Backups on schedule."
+    exit 0
 fi
