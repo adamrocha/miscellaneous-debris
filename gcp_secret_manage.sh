@@ -37,7 +37,7 @@ if [ "$1" == delete ]; then
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
-            gcloud secrets $1 "${SECRET_NAME}" --project="$TARGET"
+            gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET"
         done
     else
         exit
