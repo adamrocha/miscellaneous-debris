@@ -74,9 +74,7 @@ if [ "$1" == create ]; then
     if [[ -z $APPROVE || $APPROVE != "YES" ]]; then
         exit
     elif [[ $APPROVE == "YES" ]]; then
-    
         declare -a SECRET_ARRAY=($SECRET_LIST)
-
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
