@@ -85,7 +85,7 @@ if [ "$1" == create ]; then
             $(gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file)
         done
             if [ -f secret_migrate_file ]; then
-            rm secret_migrate_file
+                rm secret_migrate_file
             fi
     else
         exit
