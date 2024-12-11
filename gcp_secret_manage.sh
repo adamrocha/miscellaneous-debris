@@ -68,7 +68,7 @@ if [ "$1" == create ]; then
 
     printf "\n\n $SECRET_LIST \n\n"
     printf "Confirm: (YES/NO)? "
-    read -r read without -r will mangle backslashes.APPROVE
+    read -r APPROVE
     echo
 
     if [[ -z $APPROVE || $APPROVE != "YES" ]]; then
