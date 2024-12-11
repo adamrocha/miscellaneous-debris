@@ -37,7 +37,7 @@ if [ "$1" == delete ]; then
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
-            $(gcloud secrets $1 "${SECRET_NAME}" --project "$TARGET")
+            gcloud secrets $1 "${SECRET_NAME}" --project="$TARGET"
         done
     else
         exit
@@ -82,7 +82,7 @@ if [ "$1" == create ]; then
             SECRET_NAME="${i}"
             SECRET_VALUE=$(gcloud secrets versions access "latest" --secret="${SECRET_NAME}")
             echo "$SECRET_VALUE" > secret_migrate_file
-            $(gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file)
+            gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file
         done
             if [ -f secret_migrate_file ]; then
                 rm secret_migrate_file
