@@ -12,11 +12,11 @@ fi
 
 if [ "$1" == delete ]; then
     printf "Enter your target project: "
-    read TARGET
+    read -r TARGET
     echo
 
     printf "Enter your filter pattern: "
-    read FILTER
+    read -r FILTER
     echo
 
     SECRET_LIST=$(gcloud secrets list --project $TARGET --filter="$FILTER" --format=json \
@@ -27,7 +27,7 @@ if [ "$1" == delete ]; then
     printf "Warning!! you are about to delete secrets from $TARGET:\n\n"
     printf "$SECRET_LIST\n\n"
     printf "Confirm: (YES/NO)? "
-    read APPROVE
+    read -r APPROVE
     echo
 
     if [[ -z $APPROVE || $APPROVE != "YES" ]]; then
@@ -48,15 +48,15 @@ fi
 if [ "$1" == create ]; then
     # Choose source and destination for migration
     printf "Enter your source project: "
-    read SOURCE
+    read -r SOURCE
     echo
 
     printf "Enter your target project: "
-    read TARGET
+    read -r TARGET
     echo
 
     printf "Enter your filter pattern: "
-    read FILTER
+    read -r FILTER
     echo
 
     printf "You are about to replicate secrets from "$SOURCE" to "$TARGET".\n\n"
@@ -68,7 +68,7 @@ if [ "$1" == create ]; then
 
     printf "\n\n $SECRET_LIST \n\n"
     printf "Confirm: (YES/NO)? "
-    read APPROVE
+    read -r read without -r will mangle backslashes.APPROVE
     echo
 
     if [[ -z $APPROVE || $APPROVE != "YES" ]]; then
