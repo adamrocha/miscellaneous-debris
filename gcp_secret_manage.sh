@@ -19,13 +19,13 @@ if [ "$1" == delete ]; then
     read -r FILTER
     echo
 
-    SECRET_LIST=$(gcloud secrets list --project $TARGET --filter="$FILTER" --format=json \
+    SECRET_LIST=$(gcloud secrets list --project="$TARGET" --filter="$FILTER" --format=json \
         | jq -r '.[].name' \
         | cut -d"/" -f4 \
-        | head -10)
+        | head -2)
 
-    printf "Warning!! you are about to delete secrets from $TARGET:\n\n"
-    printf "$SECRET_LIST\n\n"
+    printf "Warning!! you are about to delete secrets from %s:\n\n" "$TARGET"
+    printf "%s\n\n" "$SECRET_LIST"
     printf "Confirm: (YES/NO)? "
     read -r APPROVE
     echo
@@ -37,7 +37,7 @@ if [ "$1" == delete ]; then
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
-            $(gcloud secrets $1 ${SECRET_NAME} --project $TARGET)
+            $(gcloud secrets $1 "${SECRET_NAME}" --project "$TARGET")
         done
     else
         exit
@@ -59,14 +59,14 @@ if [ "$1" == create ]; then
     read -r FILTER
     echo
 
-    printf "You are about to replicate secrets from "$SOURCE" to "$TARGET".\n\n"
+    printf "Confirming will replicate the following secrets from %s to %s:" "$SOURCE" "$TARGET"
 
-    SECRET_LIST=$(gcloud --project $SOURCE secrets list --project $SOURCE --filter="$FILTER" --format=json \
+    SECRET_LIST=$(gcloud secrets list --project="$SOURCE" --filter="$FILTER" --format=json \
         | jq -r '.[].name' \
         | cut -d"/" -f4 \
-        | head -10)
+        | head -2)
 
-    printf "\n\n $SECRET_LIST \n\n"
+    printf "\n\n%s \n\n" "$SECRET_LIST"
     printf "Confirm: (YES/NO)? "
     read -r APPROVE
     echo
@@ -75,14 +75,14 @@ if [ "$1" == create ]; then
         exit
     elif [[ $APPROVE == "YES" ]]; then
     
-        declare -a SECRET_ARRAY=($SECRET_LIST)
+        declare -a SECRET_ARRAY=("$SECRET_LIST")
 
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
-            SECRET_VALUE=$(gcloud secrets versions access "latest" --secret=${SECRET_NAME})
-            echo $SECRET_VALUE > secret_migrate_file
-            $(gcloud secrets $1 ${SECRET_NAME} --project $TARGET --data-file=secret_migrate_file)
+            SECRET_VALUE=$(gcloud secrets versions access "latest" --secret="${SECRET_NAME}")
+            echo "$SECRET_VALUE" > secret_migrate_file
+            $(gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file)
         done
             if [ -f secret_migrate_file ]; then
             rm secret_migrate_file
