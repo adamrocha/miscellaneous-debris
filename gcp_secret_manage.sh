@@ -5,17 +5,17 @@ printf "This script will walk you through managing GCP secrets.\n\n"
 
 # Choose replicate or delete functions
 if [ -z "$1" ]; then
-    printf "Missing arguement. Please use create or delete with caution.\n\n"
+    printf "Missing arguement. Please use delete argument with caution.\n\n"
     exit
 fi
 
 
 if [ "$1" == delete ]; then
-    printf "Enter your target project: "
+    printf "Enter target project: "
     read -r TARGET
     echo
 
-    printf "Enter your filter pattern: "
+    printf "Enter filter pattern: "
     read -r FILTER
     echo
 
@@ -24,7 +24,7 @@ if [ "$1" == delete ]; then
         | cut -d"/" -f4 \
         | head -2)
 
-    printf "Warning!! you are about to delete secrets from %s:\n\n" "$TARGET"
+    printf "Warning!! Confirming will delete secrets from %s:\n\n" "$TARGET"
     printf "%s\n\n" "$SECRET_LIST"
     printf "Confirm: (YES/NO)? "
     read -r APPROVE
@@ -47,15 +47,15 @@ fi
 
 if [ "$1" == create ]; then
     # Choose source and destination for migration
-    printf "Enter your source project: "
+    printf "Enter source project: "
     read -r SOURCE
     echo
 
-    printf "Enter your target project: "
+    printf "Enter target project: "
     read -r TARGET
     echo
 
-    printf "Enter your filter pattern: "
+    printf "Enter filter pattern: "
     read -r FILTER
     echo
 
