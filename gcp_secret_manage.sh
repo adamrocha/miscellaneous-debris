@@ -21,8 +21,8 @@ if [ "$1" == delete ]; then
 
     SECRET_LIST=$(gcloud secrets list --project="$TARGET" --filter="$FILTER" --format=json \
         | jq -r '.[].name' \
-        | cut -d"/" -f4 \
-        | head -2)
+        | cut -d"/" -f4)
+#        | head -2)
 
     printf "Warning!! Confirming will delete secrets from %s:\n\n" "$TARGET"
     printf "%s\n\n" "$SECRET_LIST"
@@ -63,8 +63,8 @@ if [ "$1" == create ]; then
 
     SECRET_LIST=$(gcloud secrets list --project="$SOURCE" --filter="$FILTER" --format=json \
         | jq -r '.[].name' \
-        | cut -d"/" -f4 \
-        | head -2)
+        | cut -d"/" -f4)
+#        | head -2)
 
     printf "\n\n%s \n\n" "$SECRET_LIST"
     printf "Confirm: (YES/NO)? "
@@ -78,7 +78,7 @@ if [ "$1" == create ]; then
         for i in "${SECRET_ARRAY[@]}"
         do
             SECRET_NAME="${i}"
-            SECRET_VALUE=$(gcloud secrets versions access "latest" --secret="${SECRET_NAME}")
+            SECRET_VALUE=$(gcloud secrets versions access "latest" --project="$SOURCE" --secret="${SECRET_NAME}")
             echo "$SECRET_VALUE" > secret_migrate_file
             gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file
         done
