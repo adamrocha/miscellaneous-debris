@@ -5,7 +5,7 @@ printf "This script will walk you through managing GCP secrets.\n\n"
 
 # Choose replicate or delete functions
 if [ -z "$1" ]; then
-    printf "Missing arguement. Please use delete argument with caution.\n\n"
+    printf "Missing arguement. Please use copy / delete argument with caution.\n\n"
     exit
 fi
 
@@ -45,7 +45,7 @@ if [ "$1" == delete ]; then
 fi
 
 
-if [ "$1" == create ]; then
+if [ "$1" == copy ]; then
     # Choose source and destination for migration
     printf "Enter source project: "
     read -r SOURCE
@@ -79,11 +79,11 @@ if [ "$1" == create ]; then
         do
             SECRET_NAME="${i}"
             SECRET_VALUE=$(gcloud secrets versions access "latest" --project="$SOURCE" --secret="${SECRET_NAME}")
-            echo "$SECRET_VALUE" > secret_migrate_file
-            gcloud secrets "$1" "${SECRET_NAME}" --project="$TARGET" --data-file=secret_migrate_file
+            echo "$SECRET_VALUE" > secret_copy_file
+            gcloud secrets create "${SECRET_NAME}" --project="$TARGET" --data-file=secret_copy_file
         done
-            if [ -f secret_migrate_file ]; then
-                rm secret_migrate_file
+            if [ -f secret_copy_file ]; then
+                rm secret_copy_file
             fi
     else
         exit
