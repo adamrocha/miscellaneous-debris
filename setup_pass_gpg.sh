@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Ensure GPG knows the correct terminal
+export GPG_TTY=$(tty)
+
 BACKUP_DIR="$HOME/gpg-backup"
 PASS_STORE="$HOME/.password-store"
 mkdir -p "$BACKUP_DIR"
@@ -46,7 +49,6 @@ git_sync_setup() {
         cd "$PASS_STORE"
     fi
 
-    # Only add remote if it doesn’t exist
     if ! git remote get-url origin >/dev/null 2>&1; then
         git remote add origin "$GIT_REMOTE_URL"
     fi
@@ -57,7 +59,6 @@ git_sync_setup() {
 
     CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-    # Pull first to avoid "rejected" errors, then push
     git pull --rebase origin "$CURRENT_BRANCH" || true
     git push -u origin "$CURRENT_BRANCH" || true
 }
@@ -68,12 +69,10 @@ setup_auto_push_hook() {
 
     cat > "$hook_file" <<'EOF'
 #!/usr/bin/env bash
-# Queued offline-safe auto push for pass
 REMOTE_NAME="origin"
 REMOTE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 QUEUE_FILE="$(dirname "$0")/.push-queue"
 
-# Append a marker to the queue for this commit
 echo "$(date '+%Y-%m-%d %H:%M:%S') commit" >> "$QUEUE_FILE"
 
 attempt_push() {
@@ -91,7 +90,6 @@ EOF
     chmod +x "$hook_file"
 }
 
-# Restore mode
 if [[ "${1:-}" == "--restore" ]]; then
     restore_path="${2:-$BACKUP_DIR}"
     restore_keys "$restore_path"
@@ -143,10 +141,7 @@ echo "=== Backing up GPG keys to $BACKUP_DIR (encrypted) ==="
 read -s -p "Enter passphrase for encrypted backup: " BACKUP_PASSPHRASE
 echo
 
-# Backup public key
 echo "$BACKUP_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$BACKUP_DIR/public.key.gpg" <<< "$(gpg --export --armor "$KEY_ID")"
-
-# Backup private key
 echo "$BACKUP_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --symmetric --cipher-algo AES256 -o "$BACKUP_DIR/private.key.gpg" <<< "$(gpg --export-secret-keys --armor "$KEY_ID")"
 
 echo "Encrypted backup complete."
@@ -156,6 +151,7 @@ echo "Private key: $BACKUP_DIR/private.key.gpg (keep this passphrase safe!)"
 git_sync_setup
 setup_auto_push_hook
 
+# --- SANITY CHECK ---
 echo "=== Running sanity check ==="
 HOOK_FILE="$PASS_STORE/.git/hooks/post-commit"
 TEMP_HOOK="$HOOK_FILE.temp"
@@ -168,7 +164,7 @@ TEST_ENTRY="test/pass-setup-check"
 TEST_VALUE="secret-test-value-123"
 
 pass rm -f "$TEST_ENTRY" >/dev/null 2>&1 || true
-echo "$TEST_VALUE" | pass insert -f "$TEST_ENTRY" >/dev/null
+echo "$TEST_VALUE" | pass insert -m -f "$TEST_ENTRY"
 RETRIEVED_VALUE=$(pass show "$TEST_ENTRY")
 
 if [ "$RETRIEVED_VALUE" == "$TEST_VALUE" ]; then
@@ -179,7 +175,6 @@ else
 fi
 echo "=== SANITY CHECK END ==="
 
-# Restore hook
 if [ -f "$TEMP_HOOK" ]; then
     mv "$TEMP_HOOK" "$HOOK_FILE"
 fi
