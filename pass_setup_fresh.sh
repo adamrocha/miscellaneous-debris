@@ -119,7 +119,6 @@ if [ -z "$KEY_ID" ]; then
 Key-Type: RSA
 Key-Length: 4096
 Name-Real: Pass Key
-Name-Email: you@example.com
 Expire-Date: 0
 %no-protection
 %commit
