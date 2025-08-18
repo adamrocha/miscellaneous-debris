@@ -40,6 +40,15 @@ restore_keys() {
     exit 0
 }
 
+restore_repo() {
+    echo "=== Restoring pass store from Git repo ==="
+    if [ -d "$PASS_STORE" ]; then
+        echo "Existing pass store detected at $PASS_STORE, backing it up..."
+        mv "$PASS_STORE" "${PASS_STORE}.bak.$(date +%s)"
+    fi
+    git clone "$GIT_REMOTE_URL" "$PASS_STORE"
+}
+
 git_sync_setup() {
     echo "=== Setting up Git sync for pass store ==="
     if [ ! -d "$PASS_STORE/.git" ]; then
@@ -90,10 +99,18 @@ EOF
     chmod +x "$hook_file"
 }
 
-if [[ "${1:-}" == "--restore" ]]; then
-    restore_path="${2:-$BACKUP_DIR}"
-    restore_keys "$restore_path"
-fi
+# === MAIN ===
+
+case "${1:-}" in
+    --restore-keys)
+        restore_path="${2:-$BACKUP_DIR}"
+        restore_keys "$restore_path"
+        ;;
+    --restore-repo)
+        restore_repo
+        exit 0
+        ;;
+esac
 
 echo "=== Checking OS and installing dependencies ==="
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
