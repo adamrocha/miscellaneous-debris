@@ -19,7 +19,8 @@ backup_keys() {
         cat <<EOF | gpg --batch --generate-key
 Key-Type: RSA
 Key-Length: 4096
-Name-Real: Pass Key
+# Name-Real: Pass Key
+# Name-Email: pass@example.com
 Expire-Date: 0
 %no-protection
 %commit
