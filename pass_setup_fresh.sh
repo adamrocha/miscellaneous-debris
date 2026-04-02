@@ -52,6 +52,27 @@ EOF
 	gpgconf --launch gpg-agent
 }
 
+# === Set ultimate trust on a GPG key ===
+set_key_trust() {
+	local key_fingerprint="$1"
+	echo "Setting ultimate trust on key ${key_fingerprint}..."
+	
+	# Set trust level to 5 (ultimate)
+	echo -e "trust\n5\ny\nquit" | gpg --command-fd 0 --edit-key "${key_fingerprint}" 2>/dev/null || true
+	
+	# Verify trust was set
+	local trust_level
+	trust_level=$(gpg --list-keys --with-colons "${key_fingerprint}" 2>/dev/null | awk -F: '/^uid/{print $2}' | head -n1)
+	
+	if [[ "${trust_level}" == "u" ]]; then
+		echo "✓ Key trusted successfully"
+		return 0
+	else
+		echo "WARNING: Could not verify trust level was set"
+		return 1
+	fi
+}
+
 # === Backup GPG keys with modern encryption ===
 backup_keys() {
 	echo "=== Checking for existing GPG key ==="
@@ -65,9 +86,9 @@ backup_keys() {
 		# Read user information
 		read -r -p "Enter your name: " user_name
 		read -r -p "Enter your email: " user_email
-		read -s -p "Enter passphrase for GPG key: " key_passphrase
+		read -r -s -p "Enter passphrase for GPG key: " key_passphrase
 		echo
-		read -s -p "Confirm passphrase: " key_passphrase_confirm
+		read -r -s -p "Confirm passphrase: " key_passphrase_confirm
 		echo
 
 		if [[ ${key_passphrase} != "${key_passphrase_confirm}" ]]; then
@@ -93,14 +114,34 @@ EOF
 		key_id=$(gpg --list-secret-keys --keyid-format LONG |
 			awk '/^sec/{print $2}' | cut -d'/' -f2 | head -n1)
 		echo "Generated new GPG key: ${key_id}"
+		
+		# Get fingerprint and set ultimate trust
+		local key_fp
+		key_fp=$(gpg --list-secret-keys --with-colons "${key_id}" |
+			grep '^fpr' | head -n1 | cut -d: -f10)
+		set_key_trust "${key_fp}"
 	else
 		echo "Found existing GPG key: ${key_id}"
+		
+		# Ensure existing key is trusted
+		local key_fp
+		key_fp=$(gpg --list-secret-keys --with-colons "${key_id}" |
+			grep '^fpr' | head -n1 | cut -d: -f10)
+		local current_trust
+		current_trust=$(gpg --list-keys --with-colons "${key_fp}" 2>/dev/null | awk -F: '/^uid/{print $2}' | head -n1)
+		
+		if [[ "${current_trust}" != "u" ]]; then
+			echo "Key is not fully trusted. Setting ultimate trust..."
+			set_key_trust "${key_fp}"
+		else
+			echo "✓ Key is already fully trusted"
+		fi
 	fi
 
 	echo "=== Backing up GPG keys to ${BACKUP_DIR} (encrypted) ==="
-	read -s -p "Enter passphrase for encrypted backup: " backup_passphrase
+	read -r -s -p "Enter passphrase for encrypted backup: " backup_passphrase
 	echo
-	read -s -p "Confirm passphrase: " backup_passphrase_confirm
+	read -r -s -p "Confirm passphrase: " backup_passphrase_confirm
 	echo
 
 	if [[ ${backup_passphrase} != "${backup_passphrase_confirm}" ]]; then
@@ -157,7 +198,7 @@ restore_keys() {
 		echo "WARNING: No checksums found, skipping integrity check"
 	fi
 
-	read -s -p "Enter passphrase to decrypt backup: " backup_passphrase
+	read -r -s -p "Enter passphrase to decrypt backup: " backup_passphrase
 	echo
 
 	# Import public key
@@ -186,6 +227,10 @@ restore_keys() {
 		error_exit "Fingerprint mismatch! Expected: ${backup_fp}, Got: ${restored_fp}"
 	fi
 
+	# Set ultimate trust on restored key
+	echo "Setting trust on restored key..."
+	set_key_trust "${restored_fp}"
+	
 	# Initialize pass with restored key
 	local key_id
 	key_id=$(gpg --list-secret-keys --keyid-format LONG |
