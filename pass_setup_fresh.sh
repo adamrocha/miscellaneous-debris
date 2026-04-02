@@ -21,6 +21,17 @@ error_exit() {
 	exit 1
 }
 
+# === Cross-platform SHA512 checksum ===
+get_sha512_cmd() {
+	if command -v sha512sum &>/dev/null; then
+		echo "sha512sum"  # Linux
+	elif command -v shasum &>/dev/null; then
+		echo "shasum -a 512"  # macOS
+	else
+		error_exit "No SHA-512 checksum tool found (need sha512sum or shasum)"
+	fi
+}
+
 # === Verify GPG version supports modern algorithms ===
 check_gpg_version() {
 	local gpg_version
@@ -40,7 +51,7 @@ configure_gpg_agent() {
 	chmod 700 "${HOME}/.gnupg"
 
 	# Modern agent configuration
-	# Prefer pinentry-mac on macOS for better GUI experience and avoid terminal display issues
+	# Cross-platform: pinentry-mac (macOS GUI), pinentry-tty (terminal), or system default
 	cat >"${agent_conf}" <<EOF
 # Modern GPG agent configuration
 default-cache-ttl ${GPG_TIMEOUT}
@@ -56,15 +67,15 @@ EOF
 set_key_trust() {
 	local key_fingerprint="$1"
 	echo "Setting ultimate trust on key ${key_fingerprint}..."
-	
+
 	# Set trust level to 5 (ultimate)
 	echo -e "trust\n5\ny\nquit" | gpg --command-fd 0 --edit-key "${key_fingerprint}" 2>/dev/null || true
-	
+
 	# Verify trust was set
 	local trust_level
 	trust_level=$(gpg --list-keys --with-colons "${key_fingerprint}" 2>/dev/null | awk -F: '/^uid/{print $2}' | head -n1)
-	
-	if [[ "${trust_level}" == "u" ]]; then
+
+	if [[ ${trust_level} == "u" ]]; then
 		echo "✓ Key trusted successfully"
 		return 0
 	else
@@ -114,7 +125,7 @@ EOF
 		key_id=$(gpg --list-secret-keys --keyid-format LONG |
 			awk '/^sec/{print $2}' | cut -d'/' -f2 | head -n1)
 		echo "Generated new GPG key: ${key_id}"
-		
+
 		# Get fingerprint and set ultimate trust
 		local key_fp
 		key_fp=$(gpg --list-secret-keys --with-colons "${key_id}" |
@@ -122,15 +133,15 @@ EOF
 		set_key_trust "${key_fp}"
 	else
 		echo "Found existing GPG key: ${key_id}"
-		
+
 		# Ensure existing key is trusted
 		local key_fp
 		key_fp=$(gpg --list-secret-keys --with-colons "${key_id}" |
 			grep '^fpr' | head -n1 | cut -d: -f10)
 		local current_trust
 		current_trust=$(gpg --list-keys --with-colons "${key_fp}" 2>/dev/null | awk -F: '/^uid/{print $2}' | head -n1)
-		
-		if [[ "${current_trust}" != "u" ]]; then
+
+		if [[ ${current_trust} != "u" ]]; then
 			echo "Key is not fully trusted. Setting ultimate trust..."
 			set_key_trust "${key_fp}"
 		else
@@ -172,7 +183,9 @@ EOF
 		grep '^fpr' | head -n1 | cut -d: -f10 >"${BACKUP_DIR}/fingerprint.txt"
 
 	# Generate checksums for integrity verification
-	(cd "${BACKUP_DIR}" && shasum -a 512 public.key.gpg private.key.gpg >checksums.sha512)
+	local sha_cmd
+	sha_cmd=$(get_sha512_cmd)
+	(cd "${BACKUP_DIR}" && ${sha_cmd} public.key.gpg private.key.gpg >checksums.sha512)
 
 	echo "Backup complete. Fingerprint saved in ${BACKUP_DIR}/fingerprint.txt"
 	echo "Integrity checksums saved in ${BACKUP_DIR}/checksums.sha512"
@@ -190,7 +203,9 @@ restore_keys() {
 	# Verify checksums if available
 	if [[ -f "${BACKUP_DIR}/checksums.sha512" ]]; then
 		echo "Verifying backup integrity..."
-		if ! (cd "${BACKUP_DIR}" && shasum -a 512 -c checksums.sha512 --quiet 2>/dev/null); then
+		local sha_cmd
+		sha_cmd=$(get_sha512_cmd)
+		if ! (cd "${BACKUP_DIR}" && ${sha_cmd} -c checksums.sha512 --quiet 2>/dev/null); then
 			error_exit "Checksum verification failed! Backup may be corrupted."
 		fi
 		echo "✓ Integrity verification passed"
@@ -230,7 +245,7 @@ restore_keys() {
 	# Set ultimate trust on restored key
 	echo "Setting trust on restored key..."
 	set_key_trust "${restored_fp}"
-	
+
 	# Initialize pass with restored key
 	local key_id
 	key_id=$(gpg --list-secret-keys --keyid-format LONG |
