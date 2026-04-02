@@ -24,9 +24,9 @@ error_exit() {
 # === Cross-platform SHA512 checksum ===
 get_sha512_cmd() {
 	if command -v sha512sum &>/dev/null; then
-		echo "sha512sum"  # Linux
+		echo "sha512sum" # Linux
 	elif command -v shasum &>/dev/null; then
-		echo "shasum -a 512"  # macOS
+		echo "shasum -a 512" # macOS
 	else
 		error_exit "No SHA-512 checksum tool found (need sha512sum or shasum)"
 	fi
@@ -45,6 +45,7 @@ check_gpg_version() {
 }
 
 # === Configure GPG agent for security ===
+# shellcheck disable=SC2312  # Command substitution in heredoc is intentional
 configure_gpg_agent() {
 	local agent_conf="${HOME}/.gnupg/gpg-agent.conf"
 	mkdir -p "${HOME}/.gnupg"
@@ -56,7 +57,8 @@ configure_gpg_agent() {
 # Modern GPG agent configuration
 default-cache-ttl ${GPG_TIMEOUT}
 max-cache-ttl ${GPG_TIMEOUT}
-pinentry-program $(which pinentry-mac || which pinentry-tty || which pinentry || echo /usr/bin/pinentry)
+# shellcheck disable=SC2312
+pinentry-program $(command -v pinentry-mac || command -v pinentry-tty || command -v pinentry || echo /usr/bin/pinentry)
 EOF
 	chmod 600 "${agent_conf}"
 	gpgconf --kill gpg-agent 2>/dev/null || true
@@ -256,6 +258,7 @@ restore_keys() {
 }
 
 # === Enhanced network connectivity check ===
+# shellcheck disable=SC2310  # Function exit codes are intentionally used in conditions
 check_connectivity() {
 	# Try multiple methods for better reliability
 	if timeout 2 bash -c "cat < /dev/null > /dev/tcp/8.8.8.8/53" 2>/dev/null; then
@@ -292,13 +295,16 @@ setup_repo() {
 		git remote add origin "${GIT_REMOTE_URL}" || true
 
 		# Create initial commit if files exist
-		if [[ -n "$(ls -A .)" ]]; then
+		local files_exist
+		files_exist=$(ls -A . 2>/dev/null || true)
+		if [[ -n ${files_exist} ]]; then
 			git add .
 			git commit -m "Initial commit - $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || true
 		fi
 
 		# Try to push, but don't fail if remote doesn't exist yet
 		git branch -M "${BRANCH}"
+		# shellcheck disable=SC2310  # Function is safe to use in condition
 		if check_connectivity; then
 			git push -u origin "${BRANCH}" 2>/dev/null || echo "Remote push failed (repo may not exist yet)"
 		else
@@ -391,10 +397,13 @@ manual_backup() {
 	setup_repo
 	cd "${PASS_STORE}" || error_exit "Failed to cd to ${PASS_STORE}"
 
-	if [[ -n "$(git status --porcelain)" ]]; then
+	local changes
+	changes=$(git status --porcelain 2>/dev/null || true)
+	if [[ -n ${changes} ]]; then
 		git add .
 		git commit -m "Manual backup - $(date -u '+%Y-%m-%d %H:%M:%S UTC')" || true
 
+		# shellcheck disable=SC2310  # Function is safe to use in condition
 		if check_connectivity; then
 			git push origin "${BRANCH}" && echo "✓ Backup pushed to remote"
 		else
@@ -416,6 +425,7 @@ restore_repo() {
 		rm -rf "${PASS_STORE}"
 	fi
 
+	# shellcheck disable=SC2310  # Function is safe to use in condition
 	if ! check_connectivity; then
 		error_exit "No network connectivity. Cannot restore from remote."
 	fi
