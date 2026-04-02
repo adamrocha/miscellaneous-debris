@@ -5,12 +5,14 @@
 This script has been updated to use state-of-the-art encryption and security practices:
 
 ### GPG Key Generation
+
 - **Algorithm**: ECC (Elliptic Curve Cryptography)
 - **Signing**: ed25519 (modern, fast, secure)
 - **Encryption**: cv25519 (Curve25519 for ECDH)
 - **Key Expiry**: 2 years (security best practice)
 
 ### Backup Encryption
+
 - **Cipher**: AES-256 (Advanced Encryption Standard)
 - **Digest**: SHA-512 (cryptographic hash)
 - **S2K Mode**: 3 (iterated and salted)
@@ -18,16 +20,19 @@ This script has been updated to use state-of-the-art encryption and security pra
 - **S2K Iterations**: 65,011,712 (2^26, maximum security)
 
 ### Integrity Verification
+
 - **Checksums**: SHA-512 for all backup files
 - **Fingerprint Verification**: GPG key fingerprints validated on restore
 - **Atomic Operations**: Ensures data consistency
 
 ### Git Security
+
 - **Signed Commits**: All commits signed with GPG for authenticity
 - **Automatic Push**: Background sync with retry logic
 - **Connectivity Checks**: Multiple fallback methods
 
 ### Security Best Practices
+
 - Passphrase confirmation for all sensitive operations
 - GPG agent timeout (1 hour)
 - No unprotected keys

@@ -1,4 +1,4 @@
-## Miscellanious Debris
+# Miscellanious Debris
 
 A collection of useful scripts for various tasks. This repository contains small utilities, helpers, and automation scripts that can assist with development, system administration, and other miscellaneous needs.
 
@@ -7,5 +7,5 @@ A collection of useful scripts for various tasks. This repository contains small
 - **Automation scripts**: Automate repetitive tasks.
 - **System utilities**: Tools for monitoring and managing your system.
 - **Development helpers**: Scripts to streamline your workflow.
-
-
+- **Backup and restore**: Tools for managing backups of important data.
+- **Security enhancements**: Scripts to improve the security of your environment.
